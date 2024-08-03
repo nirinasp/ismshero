@@ -144,14 +144,20 @@ if user_input := st.chat_input("Write your ISMS aware questions here"):
 
                 st.markdown(response['answer'])
 
-                documents_source = json.loads(response['text'])
+                try:
+              
+                    document_source_text = response['text'][response['text'].find("["):response['text'].rfind("]") + 1]
+                
+                    documents_source = json.loads(document_source_text)
 
-                for idx, doc in enumerate(documents_source,1):
-                    filename = os.path.basename(doc['source'])
-                    page_num = doc['page']
-                    ref_title = f":blue[Reference {idx}: *{filename} - page.{page_num}*]"
-                    with st.popover(ref_title):
-                        st.caption(doc['content'])
+                    for idx, doc in enumerate(documents_source,1):
+                        filename = os.path.basename(doc['source'])
+                        page_num = doc['page']
+                        ref_title = f":blue[Reference {idx}: *{filename} - page.{page_num}*]"
+                        with st.popover(ref_title):
+                            st.caption(doc['content'])
+                except:
+                    pass
 
                 st.session_state.chat_history.append(
                     {
