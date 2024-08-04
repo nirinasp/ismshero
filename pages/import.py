@@ -3,7 +3,6 @@ import os
 import streamlit as st
 
 from langchain.embeddings import OpenAIEmbeddings
-from langchain.prompts import ChatPromptTemplate
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
 
@@ -55,7 +54,7 @@ def get_documents_from_pdf_files(uploaded_files):
 def create_vector_store(splits):
     vector_store = SupabaseVectorStore.from_documents(
         splits,
-        OpenAIEmbeddings(model='text-embedding-ada-002'),
+        OpenAIEmbeddings(model='text-embedding-3-large'),
         client=supabase,
         table_name="documents",
         query_name="match_documents",
@@ -73,5 +72,10 @@ uploaded_files = st.file_uploader("Upload PDF files", type="pdf", accept_multipl
 
 if uploaded_files:
     with st.spinner("Processing documents..."):
-        register_documents(uploaded_files)
-    st.success("Documents imported successfully!")
+        try:
+            register_documents(uploaded_files)
+            st.success("Documents imported successfully!")
+        except Exception as e:
+            st.error(f"An error occured when importing the documents: {e}")
+            st.stop()
+    

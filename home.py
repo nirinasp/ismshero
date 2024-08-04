@@ -3,13 +3,11 @@ import json
 
 import streamlit as st
 
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.chat_models import ChatOpenAI
-from langchain_community.document_loaders import PyPDFLoader
-from langchain.chains import create_retrieval_chain, LLMChain, SimpleSequentialChain
+from langchain.chains import create_retrieval_chain, LLMChain
 from langchain_core.prompts import MessagesPlaceholder
 from langchain.chains.history_aware_retriever import create_history_aware_retriever
 
@@ -44,7 +42,7 @@ supabase: Client = create_client(supabase_url, supabase_key)
 
 def get_vector_store():
     return SupabaseVectorStore(
-        embedding=OpenAIEmbeddings(model='text-embedding-ada-002'),
+        embedding=OpenAIEmbeddings(model='text-embedding-3-large'),
         client=supabase,
         table_name="documents",
         query_name="match_documents",
